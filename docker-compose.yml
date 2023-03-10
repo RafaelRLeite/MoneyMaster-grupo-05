@@ -1,0 +1,91 @@
+version: '3.8'
+
+services:
+
+  mysql:
+    image: mysql:8.0.28
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: master_money
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - master-money-network
+
+  discovery-service:
+    image: mastermoney/discovery-service
+    ports:
+      - "8761:8761"
+    networks:
+      - master-money-network
+
+  config-service:
+    image: mastermoney/config-service
+    ports:
+      - "8888:8888"
+    networks:
+      - master-money-network
+
+  authentication-service:
+    image: mastermoney/authentication-service
+    ports:
+      - "8080:8080"
+    networks:
+      - master-money-network
+    depends_on:
+      - discovery-service
+      - config-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/master_money?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+
+  account-service:
+    image: mastermoney/account-service
+    ports:
+      - "8081:8081"
+    networks:
+      - master-money-network
+    depends_on:
+      - discovery-service
+      - config-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/master_money?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+
+  transaction-service:
+    image: mastermoney/transaction-service
+    ports:
+      - "8082:8082"
+    networks:
+      - master-money-network
+    depends_on:
+      - discovery-service
+      - config-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/master_money?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+
+  api-gateway:
+    image: mastermoney/api-gateway
+    ports:
+      - "80:80"
+    networks:
+      - master-money-network
+    depends_on:
+      - discovery-service
+      - config-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/master_money?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+
+volumes:
+  mysql-data:
+
+
+networks:
+  master-money-network:
+    driver: bridge
