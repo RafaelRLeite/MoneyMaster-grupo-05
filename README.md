@@ -1,5 +1,5 @@
 # MoneyMaster - Sistema de Gerenciamento de Finanças
-    O Master Money é um sistema de gerenciamento de finanças desenvolvido em Java, que utiliza a 
+    O Money Master é um sistema de gerenciamento de finanças desenvolvido em Java, que utiliza a 
     arquitetura de  microserviços com Spring, integrado com serviços da AWS, MySQL e Docker. Ele 
     possui uma interface de usuário web utilizando HTML5, CSS3 e Angular, e utiliza testes 
     unitários com JUnit e Mockito para garantir a qualidade do código. Além disso, o projeto é 
